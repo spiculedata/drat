@@ -27,18 +27,30 @@ import java.io.File;
 public class FileConstants {
   private static final String DRAT = "drat";
   public static final String DRAT_SUPER_DIR = getDratDirectory();
-  public static final String OODT_PATH = buildDratSubdirectoryPath("/deploy/bin/oodt");
-  public static final String WORKFLOW_PATH = buildDratSubdirectoryPath("/deploy/workflow/bin/wmgr-client");
-  public static final String DRAT_PATH = buildDratSubdirectoryPath("/deploy/bin/drat");
-  public static final String DRAT_TEMP_UNZIPPED_PATH = buildDratSubdirectoryPath("/deploy/data/staging/uploaded_repo");
-  public static final String DRAT_TEMP_LOG_OUTPUT = buildDratSubdirectoryPath("/deploy/data/drat_output.log");
+  public static final String DRAT_WORK_SUPER_DIR = getDratWorkDirectory();
+  public static final String OODT_PATH = buildDratSubdirectoryPath("/bin/oodt");
+  public static final String WORKFLOW_PATH = buildDratSubdirectoryPath("/workflow/bin/wmgr-client");
+  public static final String DRAT_PATH = buildDratSubdirectoryPath("/bin/drat");
+  public static final String DRAT_TEMP_UNZIPPED_PATH = buildDratSubdirectoryPath("/data/staging/uploaded_repo");
+  public static final String DRAT_TEMP_LOG_OUTPUT = buildDratWorkSubdirectoryPath("/logs/drat_output.log");
 
   private static String getDratDirectory() {
     final String DRAT_HOME = PathUtils.replaceEnvVariables("[DRAT_HOME]");
     return DRAT_HOME.substring(0, DRAT_HOME.lastIndexOf(DRAT) + DRAT.length());
   }
 
+  private static String getDratWorkDirectory() {
+    final String DRAT_HOME = PathUtils.replaceEnvVariables("[DRAT_WORK]");
+    return DRAT_HOME.substring(0, DRAT_HOME.lastIndexOf(DRAT) + DRAT.length());
+  }
+
+
+
   public static String buildDratSubdirectoryPath(String additionalPath) {
     return DRAT_SUPER_DIR + additionalPath;
   }
+
+  public static String buildDratWorkSubdirectoryPath(String additionalPath){
+   return DRAT_WORK_SUPER_DIR + additionalPath;
+}
 }

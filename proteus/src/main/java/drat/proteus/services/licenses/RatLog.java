@@ -38,14 +38,8 @@ public class RatLog {
                                                                   // off the
                                                                   // element can
                                                                   // be easy
-  static {
-    LICENSE_VALUES.add("Notes");
-    LICENSE_VALUES.add("Binaries");
-    LICENSE_VALUES.add("Archives");
-    LICENSE_VALUES.add("Standards");
-    LICENSE_VALUES.add("Apache Licensed");
-    LICENSE_VALUES.add("Generated");
-  }
+
+
   private static final String UNKNOWN = "Unknown Licenses";
 
   public RatLog(String ratLogLink, String log) {
@@ -59,6 +53,13 @@ public class RatLog {
     }
     licenseSpread = new HashMap<>();
     unapprovedLicenseFiles = new ArrayList<>();
+    LICENSE_VALUES.clear();
+    LICENSE_VALUES.add("Notes");
+    LICENSE_VALUES.add("Binaries");
+    LICENSE_VALUES.add("Archives");
+    LICENSE_VALUES.add("Standards");
+    LICENSE_VALUES.add("Apache Licensed");
+    LICENSE_VALUES.add("Generated");
   }
 
   public RatLog parse() {

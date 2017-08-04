@@ -1,0 +1,50 @@
+name: drat
+version: '0.1'
+summary: A distributed, parallelized (Map Reduce) wrapper around Apache™ RAT
+description: |
+  A distributed, parallelized (Map Reduce) wrapper around Apache™ RAT (Release Audit Tool). RAT is used to check for proper licensing in software projects. However, RAT takes a prohibitively long time to analyze large repositories of code, since it can only run on one JVM. Furthermore, RAT isn't customizable by file type or file size and provides no incremental output. This wrapper dramatically speeds up the process by leveraging Apache™ OODT to parallelize and workflow the following components:
+  Apache™ Solr based exploration of a CM repository (e.g., Git, SVN, etc.) and classification of that repository based on MIME type using Apache™ Tika.
+  A MIME partitioner that uses Apache™ Tika to automatically deduce and classify by file type and then partition Apache™ RAT jobs based on sets of 100 files per type (configurable) -- the M/R "partitioner"
+  A throttle wrapper for RAT to MIME targeted Apache™ RAT. -- the M/R "mapper"
+  A reducer to "combine" the produced RAT logs together into a global RAT report that can be used for stats generation. -- the M/R "reducer"
+
+grade: devel
+confinement: devmode
+
+apps:
+   oodt:
+    command: 
+       run_oodt.sh
+   drat:
+    command:
+      drat_go.sh
+
+parts:
+  drat:
+    source: ./
+    plugin: x_maven
+    stage-packages:
+      - python
+    maven-options: [-DskipTests]
+    maven-targets:
+      - distribution
+    install: |
+              mkdir -p $SNAPCRAFT_PART_INSTALL/drat
+              tar xvfz distribution/target/dms-distribution-0.1-bin.tar.gz -C $SNAPCRAFT_PART_INSTALL/drat
+              sed -i 's/\[DRAT_HOME\]\/filemgr\/catalog/\[DRAT_WORK\]\/filemgr\/catalog/' $SNAPCRAFT_PART_INSTALL/drat/filemgr/etc/filemgr.properties
+              sed -i 's/\[DRAT_HOME\]\/data\/workflow/\[DRAT_WORK\]\/workflow\/catalog/' $SNAPCRAFT_PART_INSTALL/drat/workflow/etc/workflow.properties
+              sed -i 's/\.\.\/logs/${env:SNAP_USER_DATA}\/drat\/oodt\/logs/' $SNAPCRAFT_PART_INSTALL/drat/filemgr/etc/logging.properties
+              sed -i 's/\.\.\/logs/${env:SNAP_USER_DATA}\/drat\/oodt\/logs/' $SNAPCRAFT_PART_INSTALL/drat/resmgr/etc/logging.properties
+              sed -i 's/\.\.\/logs/${env:SNAP_USER_DATA}\/drat\/oodt\/logs/' $SNAPCRAFT_PART_INSTALL/drat/workflow/etc/logging.properties
+              sed -i 's/\.\.\/logs/${env:SNAP_USER_DATA}\/drat\/oodt\/logs/' $SNAPCRAFT_PART_INSTALL/drat/crawler/etc/logging.properties
+              sed -i 's/\.\.\/logs/${env:SNAP_USER_DATA}\/drat\/oodt\/logs/' $SNAPCRAFT_PART_INSTALL/drat/pcs/etc/logging.properties
+              sed -i 's/"$WORKFLOW_HOME"\/run/$SNAP_USER_DATA\/drat\/workflow\/run/' $SNAPCRAFT_PART_INSTALL/drat/workflow/bin/wmgr
+              sed -i 's/"$RESMGR_HOME"\/run/$SNAP_USER_DATA\/drat\/resmgr\/run/' $SNAPCRAFT_PART_INSTALL/drat/resmgr/bin/resmgr
+              sed -i 's/"$FILEMGR_HOME"\/run/$SNAP_USER_DATA\/drat\/workflow\/run/' $SNAPCRAFT_PART_INSTALL/drat/filemgr/bin/filemgr
+              sed -i 's/$HOME\/drat\/deploy/$SNAP\/drat/' $SNAPCRAFT_PART_INSTALL/drat/bin/setenv.sh
+              sed -i 's/$DRAT_HOME\/logs/$SNAP_USER_DATA\/drat\/logs/' $SNAPCRAFT_PART_INSTALL/drat/bin/drat
+              sed -i 's/\"$DRAT_HOME\"\/solr/$SNAP_USER_DATA\/drat\/solr/' $SNAPCRAFT_PART_INSTALL/drat/bin/env.sh
+              sed -i 's/appBase=\"webapps\"/appBase=\"webapps\" workDir=\"${work.dir}\"/' $SNAPCRAFT_PART_INSTALL/drat/tomcat/conf/server.xml
+              echo "export CATALINA_OPTS=\$CATALINA_OPTS\" -Dwork.dir=\$SNAP_USER_DATA/drat/tomcat/work\ -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005\"" >> $SNAPCRAFT_PART_INSTALL/drat/bin/env.sh
+              cp run_oodt.sh $SNAPCRAFT_PART_INSTALL/
+              cp drat_go.sh $SNAPCRAFT_PART_INSTALL/

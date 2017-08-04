@@ -42,6 +42,8 @@ done
 # Get standard environment variables
 PRGDIR=`dirname "$PRG"`
 
+export OODT_HOME="$SNAP/drat"
+
 # Only set OODT_HOME if not already set
 [ -z "$OODT_HOME" ] && OODT_HOME=`cd "$PRGDIR/.." ; pwd`
 

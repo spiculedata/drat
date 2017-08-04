@@ -30,12 +30,13 @@ public class Utils {
   static {
     environment.put("JAVA_HOME", PathUtils.replaceEnvVariables("[JAVA_HOME]"));
     environment.put("DRAT_HOME", PathUtils.replaceEnvVariables("[DRAT_HOME]"));
+    environment.put("DRAT_WORK", PathUtils.replaceEnvVariables("[DRAT_WORK]"));
     environment.put("GANGLIA_URL",
         PathUtils.replaceEnvVariables("[GANGLIA_URL]"));
 
     buildEnvironmentVariables();
 
-    String DRAT_HOME = environment.get("DRAT_HOME");
+    String DRAT_HOME = environment.get("DRAT_WORK");
     resetDratConstants.add(DRAT_HOME + "/data/archive/");
     resetDratConstants.add(DRAT_HOME + "/data/jobs/");    
   }

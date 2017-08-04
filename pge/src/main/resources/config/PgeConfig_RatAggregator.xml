@@ -37,7 +37,7 @@
 
     <metadata key="ProductionDateTime" val="[DATE.UTC]"/>
     <metadata key="DateMilis" val="[DATE_TO_MILLIS([ProductionDateTime],UTC_FORMAT,1970-01-01)]"/>
-    <metadata key="JobDir" val="[DRAT_HOME]/data/jobs/rataggregate/[DateMilis]"/>
+    <metadata key="JobDir" val="[DRAT_WORK]/data/jobs/rataggregate/[DateMilis]"/>
     <metadata key="JobInputDir" val="[JobDir]/input"/>
     <metadata key="JobOutputDir" val="[JobDir]/output"/>
     <metadata key="JobLogDir" val="[JobDir]/logs"/>
